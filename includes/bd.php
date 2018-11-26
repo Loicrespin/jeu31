@@ -55,7 +55,7 @@ function checkAvailability($pseudo, $link) {
 
 //Fonction permettant d'enregistrer un nouvel utilisateur (pseudonyme, nom, prenom et mot de passe) dans la base de données
 
-function register($pseudo, $nom, $prenom, $hashPwd) {
+function register($pseudo, $nom, $prenom, $hashPwd, $link) {
 	$req = "INSERT INTO humain (pseudo, nomJ, prenomJ, dateCreationCompte, val_hachage, Joueur_idJoueur) VALUES ('". $pseudo . "', '" . $nom . "', '" . $prenom . "',  CURRENT_TIMESTAMP , '" . $hashPwd . "', 1);";
 	return executeUpdate($link, $req);
 }
@@ -63,7 +63,7 @@ function register($pseudo, $nom, $prenom, $hashPwd) {
 //Fonction permettant de vérifier le pseudonyme et le mot de passe de l'utilisateur
 
 function checkConnection($pseudo, $pass, $link) {
-	$req = "SELECT val_hachage FROM Joueur WHERE pseudo = '" . $pseudo . "';";
+	$req = "SELECT val_hachage FROM humain WHERE pseudo = '" . $pseudo . "';";
 	$ans = executeQuery($link, $req);
 	foreach ($ans as $line) {
 		foreach ($line as $val) {
