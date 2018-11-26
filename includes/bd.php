@@ -56,7 +56,7 @@ function checkAvailability($pseudo, $link) {
 //Fonction permettant d'enregistrer un nouvel utilisateur (pseudonyme, nom, prenom et mot de passe) dans la base de données
 
 function register($pseudo, $nom, $prenom, $hashPwd, $link) {
-	$req = "INSERT INTO humain (pseudo, nomJ, prenomJ, dateCreationCompte, val_hachage, Joueur_idJoueur) VALUES ('". $pseudo . "', '" . $nom . "', '" . $prenom . "',  CURRENT_TIMESTAMP , '" . $hashPwd . "', 1);";
+	$req = "INSERT INTO humain (pseudo, nomJ, prenomJ, dateCreationCompte, val_hachage, Joueur_idJoueur) VALUES ('". $pseudo . "', '" . $nom . "', '" . $prenom . "', CURRENT_TIMESTAMP , '" . $hashPwd . "', 1);";
 	return executeUpdate($link, $req);
 }
 
