@@ -8,11 +8,7 @@ if (isset($_SESSION['pseudo'])) {
 				break;
 			}
 			case "toomany": {
-				echo "<div class='messageError col-md-offset-1'>Vous devez sélectionner entre 1 et 3 adversaires !</div><br />";
-				break;
-			}
-			case "samecolor": {
-				echo "<div class='messageError col-md-offset-1'>Vous devez selectionner des couleurs différentes !</div><br />";
+				echo "<div class='messageError col-md-offset-1'>Vous devez sélectionner 1 adversaires maximum !</div><br />";
 				break;
 			}
 			default:
@@ -31,7 +27,6 @@ if (isset($_SESSION['pseudo'])) {
 	echo "<span class='connexion'>OU</span>";
 
 	echo "<fieldset><legend class='enteteconfigpartie'>Veuillez sélectionner votre adversaires ia :</legend>";
-	//echo getPlayersInGame($link, $_SESSION['pseudo']) . "<br/>";
 
 	echo "<fieldset><legend class='enteteconfigpartie'>Veuillez sélectionner le nombre de manche :</legend>";
 			echo "<div class='form-group'><select class='form-control' name='manche'>";

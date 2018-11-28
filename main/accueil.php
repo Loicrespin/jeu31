@@ -54,7 +54,7 @@ if (!isset($_SESSION['pseudo'])) {
 	echo "<div class='messageCo'>Bonjour " . $_SESSION['pseudo'] ." !</div><br/><br/>";
 	echo "<div class='statsentete'>Vos stats : </div>";
 	echo "<div id='tabcostats'><table><tr><th> Nombres de parties depuis un mois </th><th> Date de la dernière partie </th></tr>";
-	//echo "<tr><td>" . getTotalGamesPlayerMonth($link, $_SESSION['pseudo'], 1) . "</td><td>" . getLastGame($link, $_SESSION['pseudo']) . "</td></tr></table><br/>";
+	
 
 
 	//Bouton lancer une partie

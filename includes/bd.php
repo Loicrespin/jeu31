@@ -6,8 +6,8 @@ $dbPwd = "";
 $dbName = "p1710336";
 
 //Interaction avec la base de données
-//Fonction permettant à l'utilisateur de se connecter à la base de données et renvoyant false en cas d'erreur
 
+//Fonction permettant à l'utilisateur de se connecter à la base de données et renvoyant false en cas d'erreur
 function getConnection($dbHost, $dbUser, $dbPwd, $dbName) {
 	$connexion = mysqli_connect($dbHost, $dbUser, $dbPwd, $dbName);
 	if (mysqli_connect_errno()) {
@@ -18,7 +18,6 @@ function getConnection($dbHost, $dbUser, $dbPwd, $dbName) {
 }
 
 //Fonction permettant d'exécuter les requêtes SQL
-
 function executeQuery($link, $query) {
 	$send = mysqli_query($link, $query);
 	if ($send === False) {
@@ -28,7 +27,6 @@ function executeQuery($link, $query) {
 }
 
 //Fonction permettant de réaliser une insertion,une mise à jour ou une délétion dans la base de données
-
 function executeUpdate($link, $query) {
 	$send = mysqli_query($link, $query);
 	if (!$send) {
@@ -38,7 +36,6 @@ function executeUpdate($link, $query) {
 }
 
 //Fonction permettant de fermer la connexion avec la base de données
-
 function closeConnexion($link) {
 	mysqli_close($link);
 }
@@ -97,7 +94,6 @@ executeUpdate($link, $req);
 }
 
 //Fonction permettant de vérifier le pseudonyme et le mot de passe de l'utilisateur
-
 function checkConnection($pseudo, $pass, $link) {
 	$req = "SELECT val_hachage FROM humain WHERE pseudo = '" . $pseudo . "';";
 	$ans = executeQuery($link, $req);
@@ -112,7 +108,6 @@ function checkConnection($pseudo, $pass, $link) {
 //Accueil
 
 //Fonction affichant le nombre de personnes inscrites sur la base de données
-
 function getAllUsers($link) {
 	$req = "SELECT count(pseudo) FROM humain;";
 	$ans = executeQuery($link, $req);
@@ -123,9 +118,7 @@ function getAllUsers($link) {
 	}
 }
 
-
 //Fonction affichant le nombre de parties jouées dans le mois
-
 function getTotalGamesPlayedMonth($link) {
 	$req = "SELECT count(idPartie) FROM partie WHERE debutPartie > DATE_SUB(CURDATE(), INTERVAL 1 MONTH);";
 	$ans = executeQuery($link, $req);
@@ -137,8 +130,8 @@ function getTotalGamesPlayedMonth($link) {
 }
 
 //Partie
-//Fonction permettant de retourner la liste des joueurs engagés dans la partie
 
+//Fonction permettant de retourner la liste des joueurs engagés dans la partie
 function getPlayersInGame($link, $pseudo) {
 	$req = "SELECT J.pseudo FROM humain J WHERE J.pseudo != '$pseudo';";
 	$ans = executeQuery($link, $req);
@@ -155,8 +148,10 @@ function getPlayersInGame($link, $pseudo) {
 }
 
 //Jeu
+
 //Fonction permettant de créer une partie dans la base de données et retourner son identifiant
+function createNewGame($link, $players, $colors, $largeur)
+ {
 
-
-
+}
 ?>
