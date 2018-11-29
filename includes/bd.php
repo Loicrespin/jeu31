@@ -105,6 +105,29 @@ function checkConnection($pseudo, $pass, $link) {
 	return false;
 }
 
+//Fonction de retour de l'id du joueur connecté
+function idJoueur0($pseudo, $link) {
+	$req = "SELECT Joueur_idJoueur FROM humain WHERE pseudo = '" . $pseudo . "';";
+	$ans = executeQuery($link, $req);
+	foreach ($ans as $line) {
+		foreach ($line as $val) {
+			return $val;
+			$var_dump($val);
+		}
+	}
+}
+
+//Fonction retournant le pseudo du joueur en jeu
+function nomjoueur($id, $link) {
+	$req = "SELECT pseudo FROM humain WHERE Joueur_idJoueur = '" . $id . "';";
+	$ans = executeQuery($link, $req);
+	foreach ($ans as $line) {
+		foreach ($line as $val) {
+			return $val;
+		}
+	}
+}
+
 //Accueil
 
 //Fonction affichant le nombre de personnes inscrites sur la base de données
@@ -131,27 +154,64 @@ function getTotalGamesPlayedMonth($link) {
 
 //Partie
 
-//Fonction permettant de retourner la liste des joueurs engagés dans la partie
+//Fonction permettant d'ajouter des joueurs dans une partie
 function getPlayersInGame($link, $pseudo) {
-	$req = "SELECT J.pseudo FROM humain J WHERE J.pseudo != '$pseudo';";
+	$req = "SELECT J.Joueur_idJoueur, J.pseudo FROM humain J WHERE J.pseudo != '$pseudo';";
 	$ans = executeQuery($link, $req);
+
 	$list = "";
 	$playable = False;
 	$errMessage = "<p>Il semble que vous soyez le seul joueur inscrit sur le jeu. Pour jouer il vous faut au moins une autre personne.</p>";
 	foreach ($ans as $line) {
-		foreach ($line as $val) {
-			$list .= "<input type='checkbox' name='player[]' value='$val'/><span class='entete'>$val</span><br/>";
-			$playable = True;
-		}
-	}
+					$list .= "<input type='checkbox' name='player[]' value='$line[Joueur_idJoueur]'/><span class='entete'>$line[pseudo]</span><br/>";
+					$playable = True;
+}
 	return ($playable ? $list : $errMessage);
 }
 
 //Jeu
 
 //Fonction permettant de créer une partie dans la base de données et retourner son identifiant
-function createNewGame($link, $players, $colors, $largeur)
+function createNewGame($link, $players, $manche)
  {
 
+	$req = "SELECT max(idPartie) FROM partie;";
+	$ans = executeQuery($link, $req);
+	foreach ($ans as $line) {
+		foreach ($line as $val) {
+			$nb = $val;
+		}
+	}
+	if ($nb == NULL) {
+		$nb = 1;
+		$req = "ALTER TABLE Partie AUTO_INCREMENT = 1;";
+		executeUpdate($link, $req);
+	} else {
+		$nb++;
+	}
+ $req = "INSERT INTO partie (nbManches, debutPartie) VALUES ('" . $manche . "', CURRENT_TIMESTAMP);";
+	if (executeUpdate($link, $req)) {
+
+		$i = 0;
+		foreach ($players as $person) {
+			$req = "INSERT INTO joue (Partie_idPartie, Joueur_idJoueur) VALUES ($nb, '" . $person . "');";
+			$i++;
+			executeUpdate($link, $req);
+	}
 }
+	return $nb;
+}
+
+//Fonction permettant de créer une pioche via l'identifiant de la partie
+function createNewDeck($link, $id, $style) {
+	$req = "SELECT * FROM cartes WHERE codeC LIKE '$style%';";
+	$ans = executeQuery($link, $req);
+	$i = 0;
+	while ($card = mysqli_fetch_array($ans)) {
+			$i++;
+			$req = "INSERT INTO jeu_carte (idJeu, CARTES_idC, Partie_idP) VALUES ($i, '". $card['idC'] ."', $id);";
+			executeQuery($link, $req);
+	}
+}
+
 ?>

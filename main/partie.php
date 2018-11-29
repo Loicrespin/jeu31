@@ -31,17 +31,16 @@ if (isset($_SESSION['pseudo'])) {
 	echo "<fieldset><legend class='enteteconfigpartie'>Veuillez sélectionner le nombre de manche :</legend>";
 			echo "<div class='form-group'><select class='form-control' name='manche'>";
 			echo "<option selected disabled>Nombre de Manches</option>";
-			echo "<option value='one'>1</option>";
-	 		echo "<option value='two'>2</option>";
-	 		echo "<option value='three'>3</option>";
-	 		echo "<option value='four'>4</option>";
+			echo "<option value='1'>1</option>";
+	 		echo "<option value='2'>2</option>";
+	 		echo "<option value='3'>3</option>";
 			echo "</select></div>";
 
 		echo "<fieldset><legend class='enteteconfigpartie'>Veuillez sélectionner le jeu de carte souhaité :</legend>";
 			echo "<div class='form-group'><select class='form-control' name='theme'>";
 			echo "<option selected disabled>Jeux de cartes</option>";
-			echo "<option value='classique'>classique</option>";
-			echo "<option value='rustique'>rustique</option>";
+			echo "<option value='C'>classique</option>";
+			echo "<option value='R'>rustique</option>";
 			echo "</select></div>";
 
 	echo "</fieldset><br/>";

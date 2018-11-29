@@ -43,6 +43,8 @@
 	if (isset($registered)) {
 		if ($registered) {
 			echo "<div class='messageError col-md-offset-1'>Utilisateur " . $_SESSION['pseudo'] . " enregistré !</div><br />";
+			$_SESSION['id_Joueur0'] = idJoueur0($pseudo, $link);
+			header("Location: index.php?page=accueil");
 		} else {
 			echo "<div class='messageError col-md-offset-1'>Problème lors de l'inscription dans la base de donnée !</div>";
 		}
