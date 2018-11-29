@@ -203,7 +203,7 @@ function createNewGame($link, $players, $manche)
 
 //Fonction permettant de créer une pioche via l'identifiant de la partie
 function createNewDeck($link, $id, $style) {
-	$req = "SELECT * FROM cartes WHERE codeC LIKE '$style%';";
+	$req = "SELECT * FROM cartes WHERE codeC LIKE '$style%' ORDER BY RAND();";
 	$ans = executeQuery($link, $req);
 	$i = 0;
 	while ($card = mysqli_fetch_array($ans)) {
