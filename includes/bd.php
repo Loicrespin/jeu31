@@ -112,7 +112,6 @@ function idJoueur0($pseudo, $link) {
 	foreach ($ans as $line) {
 		foreach ($line as $val) {
 			return $val;
-			$var_dump($val);
 		}
 	}
 }
