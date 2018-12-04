@@ -304,6 +304,23 @@ a:focus, a:hover {
 		color: #FFF;
 	}
 
+	.entetepartielow {
+		font-family: 'Press Start 2P', cursive;
+		font-size: 24px;
+		color: #FFF;
+		display: inline-block;
+		justify-content: center;
+		margin-left: 25%;
+	}
+
+	.entetepartielowdef {
+		font-family: 'Press Start 2P', cursive;
+		font-size: 24px;
+		color: #FFF;
+		justify-content: center;
+		margin-left: 10%;
+	}
+
 	th {
 		font-family: 'Roboto', sans-serif;
 		border: 1px solid white;
@@ -483,6 +500,30 @@ a:focus, a:hover {
 
 }
 
+.panelcenter {
+	position: absolute;
+	margin-top: 50vh; /* poussé de la moitié de hauteur de viewport */
+  transform: translateY(-50%); /* tiré de la moitié de sa propre hauteur */
+ 	width: 100%;
+	height:auto;
+	left: 0;
+	display: flex;
+	justify-content: center;
+}
+
+.panelcentercard {
+display: flex;
+justify-content: center;
+flex-direction: row;
+}
+
+
+.panelcentercard img{
+	width: 14%;
+	margin-left: 2%;
+	height: auto;
+}
+
 .panelleft {
 	float: left;
 	margin-left: -50%;
@@ -491,28 +532,61 @@ a:focus, a:hover {
 
 .panelright {
 	position: absolute;
-	left: 70%;
+	left: 50%;
 	right: 0;
 	top: 5%;
-	width: 20%;
-	height: 50%;
+	width: auto;
+	height: auto;
 	margin: 0 auto;
 	overflow: hidden;
+	display: flex;
+	justify-content: center;
 }
 
 .panelrightelement {
 	top: 35%;
 }
 
-.piochesize img {
-	width: 20%;
+.piochesize {
+	width: 50%;
 	height: auto;
+	position:relative;
+	margin-top: 7%;
+	margin-left: -40%;
 }
+
+.piochesize2 {
+	width: 21%;
+	height: auto;
+	position:absolute;
+	margin-top: 7%;
+	margin-left: -5%;
+}
+
 
 .panelleftelement {
 	width: 100%;
 	height: auto;
 	margin-top: 10%;
+}
+
+.panelbottom {
+	position: absolute;
+	width: 100%;
+	height: auto;
+	bottom: 0;
+	left: 0;
+	margin-bottom: 1%;
+}
+
+.panelbottombutton {
+	display: flex;
+	justify-content: center;
+	flex-direction: row;
+}
+
+.panelbottombutton form {
+	margin-left: 2%;
 }
 
 .playername {
@@ -527,7 +601,6 @@ a:focus, a:hover {
 	font-family: 'Roboto', sans-serif;
 	font-size: 20px;
 	color: orange;
-	margin-left: 1%;
 	margin-top: 2%;
 }
 
@@ -535,9 +608,8 @@ a:focus, a:hover {
 	font-family: 'Roboto', sans-serif;
 	font-size: 15px;
 	color: #FFF;
-	margin-top: 2%;
+	margin-top: 1%;
 }
-
 
  .plateau {
 	position: absolute;
@@ -563,6 +635,14 @@ a:focus, a:hover {
 	overflow: auto;
 }
 
+.apropos p {
+	color: red;
+}
+
+.test {
+	background-color: red;
+}
+
 .apropoajust {
 	float: left;
 	display: inline-flex;
@@ -581,16 +661,6 @@ a:focus, a:hover {
 	overflow: auto;
 }
 
-.dimenspion {
-	width: 10%;
-	display: inline-flex;
-}
-
-.dimenspion img {
-	width: 100%;
-	height: auto;
-}
-
 #jeuTable {
 	text-align: center;
 }
@@ -604,7 +674,7 @@ a:focus, a:hover {
 }
 
 #jeuL3 {
-	margin-top: 5px;
+	margin-top: 0px;
 }
 
 /* Plateau de jeu */

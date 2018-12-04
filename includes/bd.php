@@ -173,7 +173,6 @@ function getPlayersInGame($link, $pseudo) {
 //Fonction permettant de créer une partie dans la base de données et retourner son identifiant
 function createNewGame($link, $players, $manche)
  {
-
 	$req = "SELECT max(idPartie) FROM partie;";
 	$ans = executeQuery($link, $req);
 	foreach ($ans as $line) {
@@ -190,7 +189,6 @@ function createNewGame($link, $players, $manche)
 	}
  $req = "INSERT INTO partie (nbManches, debutPartie) VALUES ('" . $manche . "', CURRENT_TIMESTAMP);";
 	if (executeUpdate($link, $req)) {
-
 		$i = 0;
 		foreach ($players as $person) {
 			$req = "INSERT INTO joue (Partie_idPartie, Joueur_idJoueur) VALUES ($nb, '" . $person . "');";
@@ -199,6 +197,75 @@ function createNewGame($link, $players, $manche)
 	}
 }
 	return $nb;
+}
+
+//Fonction qui ajoute une nouvelle manche
+function createNewSet($link, $id)
+{
+	$req = "SELECT max(idManche) FROM manche;";
+	$ans = executeQuery($link, $req);
+	foreach ($ans as $line) {
+		foreach ($line as $val) {
+			$nb = $val;
+		}
+	}
+	if ($nb == NULL) {
+		$nb = 1;
+		$req = "ALTER TABLE manche AUTO_INCREMENT = 1;";
+		executeUpdate($link, $req);
+	} else {
+		$nb++;
+	}
+
+	$req = "INSERT INTO manche (debutManche, Partie_idPartie) VALUES (CURRENT_TIMESTAMP, '" . $id . "');";
+	executeUpdate($link, $req);
+
+	return $nb;
+}
+
+//Fonction qui crée un nouveau tour
+function addNewTurn($link, $idp, $idm)
+{
+	$req = "SELECT max(idTour) FROM tour;";
+	$ans = executeQuery($link, $req);
+	foreach ($ans as $line) {
+		foreach ($line as $val) {
+			$nb = $val;
+		}
+	}
+	if ($nb == NULL) {
+		$nb = 1;
+		$req = "ALTER TABLE tour AUTO_INCREMENT = 1;";
+		executeUpdate($link, $req);
+	} else {
+		$nb++;
+	}
+
+	$req = "INSERT INTO tour (Manche_idManche, Manche_Partie_idPartie) VALUES ('" . $idm . "', '" . $idp . "');";
+	executeUpdate($link, $req);
+
+	return $nb;
+}
+
+//Fonction qui ajoute une action
+function addAction($link, $action, $idt, $idm, $idp, $idj) {
+	$req = "SELECT max(idAction) FROM action;";
+	$ans = executeQuery($link, $req);
+	foreach ($ans as $line) {
+		foreach ($line as $val) {
+			$nb = $val;
+		}
+	}
+	if ($nb == NULL) {
+		$nb = 1;
+		$req = "ALTER TABLE action AUTO_INCREMENT = 1;";
+		executeUpdate($link, $req);
+	} else {
+		$nb++;
+	}
+
+	$req = "INSERT INTO action (nomAction, Tour_idTour, Tour_Manche_idManche, Tour_Manche_Partie_idPartie, Joueur_idJoueur) VALUES ('" . $action . "', '" . $idt . "', '" . $idm . "', '" . $idp . "', '" . $idj . "');";
+	executeUpdate($link, $req);
 }
 
 //Fonction permettant de créer une pioche via l'identifiant de la partie
@@ -213,4 +280,46 @@ function createNewDeck($link, $id, $style) {
 	}
 }
 
+//Cette fonction retourne le type d'une carte piochéé et la supprime dans la bdd
+function getCard($link, $id) {
+	$req = "SELECT * FROM jeu_carte WHERE Partie_idP = $id ORDER BY RAND() LIMIT 1;";
+	$ans = executeQuery($link, $req);
+	if (mysqli_num_rows($ans) > 0) {
+		$card = mysqli_fetch_array($ans);
+		$req = "DELETE FROM jeu_carte WHERE idJeu = ". $card['idJeu'] ." AND Cartes_idC = '". $card['Cartes_idC'] ."' AND Partie_idP = ". $card['Partie_idP'] .";";
+		executeQuery($link, $req);
+		return $card['Cartes_idC'];
+	} else {
+		return "endDeck";
+	}
+}
+
+//Fonction qui retourne le nom de la carte
+function getCardName($link, $id) {
+	$req = "SELECT nomC FROM cartes WHERE idC = '$id';";
+	$ans = executeQuery($link, $req);
+	foreach ($ans as $line) {
+		foreach ($line as $val) {
+			return $val;
+		}
+	}
+}
+
+function getImage($link, $id) {
+	$req = "SELECT contenu FROM cartes WHERE idC = '$id';";
+	$result = executeQuery($link, $req);
+	$row = mysqli_fetch_array($result);
+
+	echo '<img src="data:image/png;base64,'.base64_encode( $row['contenu'] ).'"/>';
+}
+
+function getColor($link, $id) {
+	$req = "SELECT couleur FROM joueur WHERE idJoueur = '$id';";
+	$ans = executeQuery($link, $req);
+	foreach ($ans as $line) {
+		foreach ($line as $val) {
+			return $val;
+		}
+	}
+}
 ?>

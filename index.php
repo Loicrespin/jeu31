@@ -122,7 +122,7 @@
 	<!-- Bootstrap-JavaScript --> <script type="text/javascript" src="js/bootstrap.min.js"></script>
 
 	<!-- Tab-JavaScript -->
-		<script src="js/cbpFWTabs.js"></script>
+		<!-- <script src="js/cbpFWTabs.js"></script> -->
 		<script>
 			(function() {
 				[].slice.call( document.querySelectorAll( '.tabs' ) ).forEach( function( el ) {
@@ -133,12 +133,12 @@
 	<!-- //Tab-JavaScript -->
 
 	<!-- Popup-Box-JavaScript -->
-		<script src="js/jquery.chocolat.js"></script>
-		<script type="text/javascript">
+		<!-- <script src="js/jquery.chocolat.js"></script> -->
+		<!-- <script type="text/javascript">
 			$(function() {
 				$('.w3portfolioaits-item a').Chocolat();
 			});
-		</script>
+		</script> -->
 	<!-- //Popup-Box-JavaScript -->
 
 	<!-- Smooth-Scrolling-JavaScript -->

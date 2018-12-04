@@ -40,7 +40,7 @@ if (isset($_SESSION['pseudo'])) {
 			echo "<div class='form-group'><select class='form-control' name='theme'>";
 			echo "<option selected disabled>Jeux de cartes</option>";
 			echo "<option value='C'>classique</option>";
-			echo "<option value='R'>rustique</option>";
+			echo "<option value='F'>fantastique</option>";
 			echo "</select></div>";
 
 	echo "</fieldset><br/>";
