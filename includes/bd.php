@@ -168,6 +168,21 @@ function getPlayersInGame($link, $pseudo) {
 	return ($playable ? $list : $errMessage);
 }
 
+//Fonction permettant d'ajouter des joueurs dans une partie
+function getIaInGame($link) {
+	$req = "SELECT Joueur_idJoueur, strategie FROM ia;";
+	$ans = executeQuery($link, $req);
+
+	$list = "";
+	$playable = False;
+	$errMessage = "<p>Il semble que vous soyez le seul joueur inscrit sur le jeu. Pour jouer il vous faut au moins une autre personne.</p>";
+	foreach ($ans as $line) {
+					$list .= "<input type='checkbox' name='player[]' value='$line[Joueur_idJoueur]'/><span class='entete'>$line[strategie]</span><br/>";
+					$playable = True;
+}
+	return ($playable ? $list : $errMessage);
+}
+
 //Jeu
 
 //Fonction permettant de créer une partie dans la base de données et retourner son identifiant
@@ -199,6 +214,23 @@ function createNewGame($link, $players, $manche)
 	return $nb;
 }
 
+//fonction metant fin a la partie
+function endGame ($link, $idp, $vainqueur) {
+			$req = "UPDATE partie SET vainqueurPartie = '" .$vainqueur. "', finPartie = CURRENT_TIMESTAMP  WHERE idPartie = ". $idp .";";
+			executeUpdate($link, $req);
+}
+
+//fonction retournant le nom du vainqueur de la partie
+function gameWinner($link, $idp) {
+	$req = "SELECT vainqueurPartie FROM partie WHERE idPartie = " . $idp . ";";
+	$ans = executeQuery($link, $req);
+	foreach ($ans as $line) {
+		foreach ($line as $val) {
+			return $val;
+		}
+	}
+}
+
 //Fonction qui ajoute une nouvelle manche
 function createNewSet($link, $id)
 {
@@ -223,6 +255,34 @@ function createNewSet($link, $id)
 	return $nb;
 }
 
+//Fonction qui set le score du joueur1 d'une manche
+function setMancheScoreJ1($link, $idm, $score) {
+	$req = "UPDATE manche SET ScoreJ1 = $score WHERE idManche = ". $idm ."";
+	executeUpdate($link, $req);
+}
+
+//Fonction qui set le score du joueur1 d'une manche
+function setMancheScoreJ2($link, $idm, $score) {
+	$req = "UPDATE manche SET ScoreJ2 = $score WHERE idManche = ". $idm ."";
+	executeUpdate($link, $req);
+}
+
+//Retourne le nombre de manche gagné par un joeur sur une partie
+function getTotalSetWinInGame($link, $joueur, $idp) {
+		$req = "SELECT COUNT(idManche) FROM manche WHERE vainqueurManche = '".$joueur ."' AND Partie_idPartie = ". $idp."";
+		$ans = executeUpdate($link, $req);
+		foreach ($ans as $line) {
+			foreach ($line as $val) {
+				return $val;
+			}
+		}
+}
+
+function setEnding($link, $idm, $name) {
+	$req = "UPDATE manche SET vainqueurManche =  '" . $name ."' , finManche = CURRENT_TIMESTAMP WHERE idManche = ". $idm .";";
+	executeUpdate($link, $req);
+}
+
 //Fonction qui crée un nouveau tour
 function addNewTurn($link, $idp, $idm)
 {
@@ -245,6 +305,12 @@ function addNewTurn($link, $idp, $idm)
 	executeUpdate($link, $req);
 
 	return $nb;
+}
+
+function addTurnScore($link, $score, $idt, $idp, $idm)
+{
+	$req = "UPDATE tour SET scoreTotal = $score  WHERE idTour = ". $idt ." AND Manche_idManche = '". $idm ."' AND Manche_Partie_idPartie = ". $idm .";";
+	executeUpdate($link, $req);
 }
 
 //Fonction qui ajoute une action
@@ -280,6 +346,16 @@ function createNewDeck($link, $id, $style) {
 	}
 }
 
+//Fonction permettant de créer une pioche via la d
+function createNewDeckFromDeff($link, $id, $card) {
+	$i = 0;
+	foreach($card as $key => $value) {
+			$i++;
+			$req = "INSERT INTO jeu_carte (idJeu, CARTES_idC, Partie_idP) VALUES ($i, $value, $id) ORDER BY RAND();";
+			executeQuery($link, $req);
+		}
+}
+
 //Cette fonction retourne le type d'une carte piochéé et la supprime dans la bdd
 function getCard($link, $id) {
 	$req = "SELECT * FROM jeu_carte WHERE Partie_idP = $id ORDER BY RAND() LIMIT 1;";
@@ -305,12 +381,39 @@ function getCardName($link, $id) {
 	}
 }
 
+//Retourne le code de la carte pour déterminer sa couleur
+function getColorCard($link, $id) {
+	$req = "SELECT codeC FROM cartes WHERE idC = '$id';";
+	$ans = executeQuery($link, $req);
+	foreach ($ans as $line) {
+		foreach ($line as $val) {
+			if(substr($val, -1) == "C" || substr($val, -1) == "K") {
+				return "red";
+			} else {
+				return "black";
+			}
+		}
+	}
+}
+
+//fonction qui retourne la valeur de la carte
+function getScore($link, $id) {
+		$req = "SELECT points FROM cartes WHERE idC = '$id';";
+		$ans = executeQuery($link, $req);
+		foreach ($ans as $line) {
+			foreach ($line as $val) {
+				return $val;
+			}
+		}
+	}
+
 function getImage($link, $id) {
 	$req = "SELECT contenu FROM cartes WHERE idC = '$id';";
 	$result = executeQuery($link, $req);
 	$row = mysqli_fetch_array($result);
 
-	echo '<img src="data:image/png;base64,'.base64_encode( $row['contenu'] ).'"/>';
+	echo '<input type="image" src="data:image/png;base64,'.base64_encode( $row['contenu']).'" name="'. $id .'" value="'. $id .'" />';
+
 }
 
 function getColor($link, $id) {

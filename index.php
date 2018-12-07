@@ -62,7 +62,7 @@
 				</button>
 				<!-- Logo -->
 				<div class="logo">
-					<a class="navbar-brand logo-w3l button" href="index.php"><span style="color:orange;">JEU</span>-31</a>
+					<a class="navbar-brand logo-w3l button" href="index.php"><span style="color:#C03000;">JEU</span>-31</a>
 				</div>
 				<!-- //Logo -->
 			</div>
@@ -132,15 +132,6 @@
 		</script>
 	<!-- //Tab-JavaScript -->
 
-	<!-- Popup-Box-JavaScript -->
-		<!-- <script src="js/jquery.chocolat.js"></script> -->
-		<!-- <script type="text/javascript">
-			$(function() {
-				$('.w3portfolioaits-item a').Chocolat();
-			});
-		</script> -->
-	<!-- //Popup-Box-JavaScript -->
-
 	<!-- Smooth-Scrolling-JavaScript -->
 		<script type="text/javascript">
 			jQuery(document).ready(function($) {
@@ -152,7 +143,5 @@
 		</script>
 	<!-- //Smooth-Scrolling-JavaScript -->
 
-<!-- //Custom-JavaScript-File-Links -->
 </body>
-
 </html>

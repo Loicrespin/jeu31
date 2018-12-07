@@ -72,18 +72,20 @@ if (isset($_GET['action'])) {
 					}
 
 					if(isset($_POST['theme'])) {
-						$style = $_POST['theme'];
+						$_SESSION['style'] = $_POST['theme'];
 					} else {
 
 					}
 
 			array_unshift($players, $_SESSION['player0']);
+			$_SESSION['currManche'] = 1;
 			$_SESSION['currPlayer'] = 0;
 			$_SESSION['id'] = createNewGame($link, $players, $manche);
 			$_SESSION['id_manche'] = createNewSet($link, $_SESSION['id']);
 			$_SESSION['id_tour'] = addNewTurn($link, $_SESSION['id'], $_SESSION['id_manche']);
 			$_SESSION['piocher'] = 0;
-			createNewDeck($link, $_SESSION['id'], $style);
+			$_SESSION['alreadycogne'] = false;
+			createNewDeck($link, $_SESSION['id'], $_SESSION['style']);
 
 			//SEt la main de départ
 			for($i = 0; $i < 3; $i++) {
@@ -93,6 +95,28 @@ if (isset($_GET['action'])) {
 
 			$_SESSION['main'] = $cartArray;
 			$_SESSION['main2'] = $cartArray2;
+
+			$_SESSION['defausse'] = 0;
+			$_SESSION['deckdefausse'] = array();
+
+
+								if(calculScoreRED($link, $_SESSION['main']) >= calculScoreBLACK($link, $_SESSION['main'])) {
+									$score = calculScoreRED($link, $_SESSION['main']);
+										$_SESSION['bestscore1'] = $score;
+								} else {
+									$score = calculScoreBLACK($link, $_SESSION['main']);
+										$_SESSION['bestscore1'] = $score;
+								}
+
+							if(calculScoreRED($link, $_SESSION['main2']) >= calculScoreBLACK($link, $_SESSION['main2'])) {
+								$score = calculScoreRED($link, $_SESSION['main2']);
+									$_SESSION['bestscore2'] = $score;
+							} else {
+								$score = calculScoreBLACK($link, $_SESSION['main2']);
+										$_SESSION['bestscore2'] = $score;
+							}
+
+						addTurnScore($link, $score, $_SESSION['id_tour'], $_SESSION['id'], $_SESSION['id_manche']);
 
 			header("Location: index.php?page=jeu&new=true");
 		}
@@ -107,9 +131,16 @@ break;
 	case "card": {
 		if($_SESSION['piocher'] == 1) {
 			header("Location: index.php?page=jeu&err=dejapioche");
-		} else {
+		 } else {
+
 			$_SESSION['piocher'] = 1;
 			$_SESSION['card'] = getCard($link, $_SESSION['id']);
+			$ans = $_SESSION['card'];
+
+			if ($ans == "endDeck") {
+			createNewDeckFromDeff($link, $_SESSION['id'], $_SESSION['deckdefausse']);
+			header("Location: index.php?page=jeu&card=$ans");
+			}
 
 			//Ajout de la carte en main
 			if($_SESSION['currPlayer'] == 0) {
@@ -119,33 +150,125 @@ break;
 			}
 
 			addAction($link, "Pioche", 	$_SESSION['id_tour'], 	$_SESSION['id_manche'], 	$_SESSION['id'], 	$_SESSION['player' . $_SESSION['currPlayer']]);
-			$ans = $_SESSION['card'];
-			if ($ans == "endDeck") {
-			header("Location: index.php?page=jeu&end=deck");
-				exit;
-			}
 			header("Location: index.php?page=jeu&card=$ans");
-	}
+	 }
 	break;
 		}
 
 		//Defausse de carte
 		case "defausse": {
-				
+			if($_SESSION['defausse'] == 0) {
+				header("Location: index.php?page=jeu&err=notselect");
+			} else if (count($_SESSION['main']) == 3 && count($_SESSION['main2']) == 3) {
+					header("Location: index.php?page=jeu&err=dejadefausse");
+			} else {
+
+				//supression de la carte en main
+				if($_SESSION['currPlayer'] == 0) {
+					array_splice($_SESSION['main'], array_search($_SESSION['defausse'], $_SESSION['main']),1);
+				} else {
+					array_splice($_SESSION['main2'], array_search($_SESSION['defausse'], $_SESSION['main2']),1);
+				}
+
+				 		array_push($_SESSION['deckdefausse'],  $_SESSION['defausse']);
+						addAction($link, "Defausse", 	$_SESSION['id_tour'], 	$_SESSION['id_manche'], 	$_SESSION['id'], 	$_SESSION['player' . $_SESSION['currPlayer']]);
+
+						$ans = $_SESSION['defausse'];
+						$_SESSION['defausse'] = 0;
+
+						header("Location: index.php?page=jeu&defausse=$ans");
+					}
 			break;
 		}
 
 		//Cogner
 		case "cogner": {
+			$_SESSION['piocher'] = 0;
+			if($_SESSION['alreadycogne'] == true) {
+				if($_SESSION['currPlayer'] == 0) {
+					setMancheScoreJ1($link, $_SESSION['id_manche'], $_SESSION['bestscore1']);
+				} else {
+					setMancheScoreJ2($link, $_SESSION['id_manche'], $_SESSION['bestscore2']);
+				}
+				if($_SESSION['bestscore1'] > $_SESSION['bestscore2']) {
+					$_SESSION['gagnant'] = nomjoueur($_SESSION['player' . 0], $link);
+					setEnding($link, $_SESSION['id_manche'], $_SESSION['gagnant']);
+				} else {
+						$_SESSION['gagnant'] = nomjoueur($_SESSION['player' . 1], $link);
+						setEnding($link, $_SESSION['id_manche'], 	$_SESSION['gagnant']);
+				}
 
+				//fin de partie
+				if($_SESSION['currManche'] == $_SESSION['manche']) {
+					if(getTotalSetWinInGame($link, nomjoueur($_SESSION['player' . 0], $link), $_SESSION['id']) > getTotalSetWinInGame($link, nomjoueur($_SESSION['player' . 1], $link), $_SESSION['id']))
+					{
+						endGame($link, $_SESSION['id'], nomjoueur($_SESSION['player' . 0], $link));
+					} else {
+							endGame($link, $_SESSION['id'] ,nomjoueur($_SESSION['player' . 1], $link));
+					}
+					header("Location: index.php?page=jeu&end=endgame");
+				} else {
+					header("Location: index.php?page=jeu&end=endmanche");
+				}
+			} else {
+
+				$_SESSION['alreadycogne'] = true;
+
+				if($_SESSION['currPlayer'] == 0) {
+					setMancheScoreJ1($link, $_SESSION['id_manche'], $_SESSION['bestscore1']);
+					header("Location: index.php?page=jeu&err=J1cogner");
+				} else {
+					setMancheScoreJ2($link,$_SESSION['id_manche'], $_SESSION['bestscore2']);
+					header("Location: index.php?page=jeu&err=J2cogner");
+				}
+
+				$start = $_SESSION['currPlayer'];
+				$next = $start;
+				$next = ($next + 1) % $_SESSION['nbPlayers'];
+				$player = $_SESSION['player'. $next];
+				$_SESSION['currPlayer'] = $next;
+
+		}
 			break;
 		}
 
 		//Fin du tour
 		case "endturn": {
-			if (count($_SESSION['main']) >= 3 || count($_SESSION['main2']) >= 3) {
-				header("Location: index.php?page=jeu&err=manycard");
-			} else {
+			if($_SESSION['alreadycogne'] == true) {
+				if($_SESSION['currPlayer'] == 0) {
+					setMancheScoreJ1($link, $_SESSION['id_manche'], $_SESSION['bestscore1']);
+				} else {
+					setMancheScoreJ2($link, $_SESSION['id_manche'], $_SESSION['bestscore2']);
+				}
+				if($_SESSION['bestscore1'] > $_SESSION['bestscore2']) {
+					$_SESSION['gagnant'] = nomjoueur($_SESSION['player' . 0], $link);
+					setEnding($link, $_SESSION['id_manche'], $_SESSION['gagnant']);
+				} else {
+						$_SESSION['gagnant'] = nomjoueur($_SESSION['player' . 1], $link);
+						setEnding($link, $_SESSION['id_manche'], 	$_SESSION['gagnant']);
+				}
+
+				if($_SESSION['currManche'] == $_SESSION['manche']) {
+					if(getTotalSetWinInGame($link, nomjoueur($_SESSION['player' . 0], $link), $_SESSION['id']) > getTotalSetWinInGame($link, nomjoueur($_SESSION['player' . 1], $link), $_SESSION['id']))
+					{
+						endGame($link, $_SESSION['id'], nomjoueur($_SESSION['player' . 0], $link));
+					} else {
+							endGame($link, $_SESSION['id'] ,nomjoueur($_SESSION['player' . 1], $link));
+					}
+					header("Location: index.php?page=jeu&end=endgame");
+
+				} else {
+					header("Location: index.php?page=jeu&end=endmanche");
+
+			}
+		}
+
+			if (count($_SESSION['main']) > 3 || count($_SESSION['main2']) > 3) {
+			header("Location: index.php?page=jeu&err=manycard");
+		} else if ($_SESSION['piocher'] == 0) {
+				header("Location: index.php?page=jeu&err=notpioche");
+		} else {
+			$score = 0;
 			$_SESSION['piocher'] = 0;
 			$start = $_SESSION['currPlayer'];
 			$next = $start;
@@ -153,10 +276,76 @@ break;
 			$player = $_SESSION['player'. $next];
 			$_SESSION['currPlayer'] = $next;
 
-			$_SESSION['id_tour'] = addNewTurn($link, $_SESSION['id'], $_SESSION['id_manche']);
+			if($_SESSION['currPlayer'] == 0) {
+					if(calculScoreRED($link, $_SESSION['main']) >= calculScoreBLACK($link, $_SESSION['main'])) {
+						$score = calculScoreRED($link, $_SESSION['main']);
+						$_SESSION['bestscore1'] = $score;
+					} else {
+						$score = calculScoreBLACK($link, $_SESSION['main']);
+						$_SESSION['bestscore1'] = $score;
+					}
+			} else {
+				if(calculScoreRED($link, $_SESSION['main2']) >= calculScoreBLACK($link, $_SESSION['main2'])) {
+					$score = calculScoreRED($link, $_SESSION['main2']);
+					$_SESSION['bestscore2'] = $score;
+				} else {
+					$score = calculScoreBLACK($link, $_SESSION['main2']);
+					$_SESSION['bestscore2'] = $score;
+				}
+			}
+
+				addTurnScore($link, $score, $_SESSION['id_tour'], $_SESSION['id'], $_SESSION['id_manche']);
+
+				$_SESSION['id_tour'] = addNewTurn($link, $_SESSION['id'], $_SESSION['id_manche']);
 
 			header("Location: index.php?page=jeu");
 		}
+			break;
+		}
+
+		case "nextset" : {
+
+				$_SESSION['currManche']++;
+				$_SESSION['bestscore1'] = 0;
+				$_SESSION['bestscore2'] = 0;
+				$_SESSION['id_manche'] = createNewSet($link, $_SESSION['id']);
+				$_SESSION['id_tour'] = addNewTurn($link, $_SESSION['id'], $_SESSION['id_manche']);
+				$_SESSION['piocher'] = 0;
+				$_SESSION['alreadycogne'] = false;
+				createNewDeck($link, $_SESSION['id'], $_SESSION['style']);
+
+				//Set la main de départ
+				for($i = 0; $i < 3; $i++) {
+					$cartArray[$i] = getCard($link, $_SESSION['id']);
+					$cartArray2[$i] = getCard($link, $_SESSION['id']);
+				}
+
+				$_SESSION['main'] = $cartArray;
+				$_SESSION['main2'] = $cartArray2;
+
+				$_SESSION['defausse'] = 0;
+				$_SESSION['deckdefausse'] = array();
+
+						if(calculScoreRED($link, $_SESSION['main']) >= calculScoreBLACK($link, $_SESSION['main'])) {
+							$score = calculScoreRED($link, $_SESSION['main']);
+								$_SESSION['bestscore1'] = $score;
+						} else {
+							$score = calculScoreBLACK($link, $_SESSION['main']);
+								$_SESSION['bestscore1'] = $score;
+						}
+
+
+					if(calculScoreRED($link, $_SESSION['main2']) >= calculScoreBLACK($link, $_SESSION['main2'])) {
+						$score = calculScoreRED($link, $_SESSION['main2']);
+							$_SESSION['bestscore2'] = $score;
+					} else {
+						$score = calculScoreBLACK($link, $_SESSION['main2']);
+								$_SESSION['bestscore2'] = $score;
+					}
+
+					addTurnScore($link, $score, $_SESSION['id_tour'], $_SESSION['id'], $_SESSION['id_manche']);
+
+			header("Location: index.php?page=jeu");
 			break;
 		}
 

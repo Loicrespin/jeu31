@@ -27,13 +27,14 @@ if (isset($_SESSION['pseudo'])) {
 	echo "<span class='connexion'>OU</span>";
 
 	echo "<fieldset><legend class='enteteconfigpartie'>Veuillez sélectionner votre adversaires ia :</legend>";
+	echo getIaInGame($link);
 
 	echo "<fieldset><legend class='enteteconfigpartie'>Veuillez sélectionner le nombre de manche :</legend>";
 			echo "<div class='form-group'><select class='form-control' name='manche'>";
 			echo "<option selected disabled>Nombre de Manches</option>";
 			echo "<option value='1'>1</option>";
-	 		echo "<option value='2'>2</option>";
 	 		echo "<option value='3'>3</option>";
+	 		echo "<option value='5'>5</option>";
 			echo "</select></div>";
 
 		echo "<fieldset><legend class='enteteconfigpartie'>Veuillez sélectionner le jeu de carte souhaité :</legend>";
