@@ -175,7 +175,7 @@ function getIaInGame($link) {
 
 	$list = "";
 	$playable = False;
-	$errMessage = "<p>Il semble que vous soyez le seul joueur inscrit sur le jeu. Pour jouer il vous faut au moins une autre personne.</p>";
+	$errMessage = "<p>Il semble qu'il n'y est aucune ia inscrit sur le jeu. Pour jouer il vous faut au moins une autre personne ou ia.</p>";
 	foreach ($ans as $line) {
 					$list .= "<input type='checkbox' name='player[]' value='$line[Joueur_idJoueur]'/><span class='entete'>$line[strategie]</span><br/>";
 					$playable = True;
