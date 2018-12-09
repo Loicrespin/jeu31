@@ -22,6 +22,10 @@
 	    unset($_SESSION['card']);
     }
 }
+if($_SESSION['isIA'] == true && $_SESSION['currPlayer'] == 1) {
+	IaPlay($link, $_SESSION['player1']);
+	$_SESSION['Iaaction'] = IaPlay($link, $_SESSION['player1']);
+}
 ob_start();
 ?>
 
@@ -64,10 +68,6 @@ ob_start();
  <div id="jeuL1C2" class="event">
 	 <div class="entetepartie">Evénements :	</div>
 	 <?php
-	 var_dump(	$_SESSION['gagnant']);
-	  var_dump($_SESSION['iatour']);
-	 var_dump($_SESSION['Iaaction']);
-	 var_dump($_SESSION['main2']);
 	 if (isset($_GET['end'])) {
 	 	if ($_GET['end'] == "endmanche") {
 			echo "<div class='eventspeech2'>La manche est finies ! <br/>";
@@ -158,7 +158,7 @@ ob_start();
 <div id="jeuL2">
  <div id="jeuL2C1" class="panelright">
 	 <div class="entetepartielow">Pioches</div>
-	 <!-- <div class="piochesize"><img id="pile" alt="Pile de cartes" src="images/dosdecarte.jpg"></div> -->
+	<div class="piochesize"><img id="pile" alt="Pile de cartes" src="images/dosdecarte.jpg"></div>
 	 <div class='piochesizedef'><?php
 	 if (isset($_GET['card'])) {
 		 getImage($link, $_GET['card']);
@@ -264,11 +264,6 @@ ob_start();
 				 echo "</br></br><button class='btn btn-warning' type='submit' value='endTurn'>Fin du tour</button>";
 			 }
 			echo "</form>";
-		}
-		if($_SESSION['isIA'] == true && $_SESSION['currPlayer'] == 1 && $_SESSION['alreadycogne'] == false) {
-			IaPlay($link, $_SESSION['player1']);
-			$_SESSION['Iaaction'] = IaPlay($link, $_SESSION['player1']);
-
 		}
 		 ob_end_flush();?>
 		</span>

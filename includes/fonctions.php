@@ -58,7 +58,7 @@ function IaDefausse($link) {
       }
     }
   }
-  $_SESSION['defausselast'] = $id; 
+  $_SESSION['defausselast'] = $id;
   array_splice($_SESSION['main2'], array_search($id, $_SESSION['main2']),1);
   array_push($_SESSION['deckdefausse'],  $id);
   addAction($link, "Defausse", 	$_SESSION['id_tour'], 	$_SESSION['id_manche'], 	$_SESSION['id'], 	$_SESSION['player' . $_SESSION['currPlayer']]);
@@ -66,7 +66,6 @@ function IaDefausse($link) {
 }
 
 function IaPlay($link, $idj) {
-
     $values = array('piocher', 'cogner', 'piochedefausse', 'fintour');
     $weights = array(getIaProbPioche($link, $idj), getIaProbCogne($link, $idj), getIaProbPioche($link, $idj), getIaProbfinTour($link, $idj));
     $weighted_value = weighted_random($values, $weights);
@@ -100,7 +99,6 @@ function IaPlay($link, $idj) {
       $_SESSION['piocher'] = 1;
       //Ajout de la carte en main
       array_push($_SESSION['main2'], $_SESSION['defausselast']);
-
       array_splice($_SESSION['deckdefausse'], array_search($_SESSION['defausselast'], $_SESSION['deckdefausse']),1);
 
       addAction($link, "Pioche Defausse", 	$_SESSION['id_tour'], 	$_SESSION['id_manche'], 	$_SESSION['id'], 	$_SESSION['player' . $_SESSION['currPlayer']]);

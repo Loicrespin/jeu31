@@ -670,10 +670,26 @@ flex-direction: row;
 	left: 0;
 	right: 0;
 	top: 0%;
-
+	
 	margin: 0 auto;
 	padding: 0px;
 	overflow: auto;
+}
+
+.cartesfantastiques {
+	margin-left: 50px;
+	margin-right: 50px;
+}
+
+.cartesclassiques {
+	margin-left: 150px;
+	margin-right: 150px;
+}
+
+.apropos p {
+	margin-left: 20px;
+	margin-right: 20px;
+	text-align: center;
 }
 
 .test {

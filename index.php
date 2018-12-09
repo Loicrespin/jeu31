@@ -17,7 +17,7 @@
 	<meta charset="utf-8" />
 	<title>Projet BDW1</title>
 	<link rel="stylesheet" media="all" type="text/css" href="./css/styles.css">
-	<link rel="shortcut icon" type="image/x-icon" href="images/carotte.png" />
+	<link rel="shortcut icon" type="image/x-icon" href="images/couleurs.png"/>
 	<!-- Meta-Tags -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -89,7 +89,7 @@
 	<div class="slider">
 		<ul class="rslides" id="slider">
 			<li class="first-slide w3ls">
-				<img src="images/lapin.jpg" alt="Game Robo">
+				<img src="images/cartes.jpg" alt="Game Robo">
 				<div class="heading">
 					<div class="col-md-offset-4">
 						<main>
