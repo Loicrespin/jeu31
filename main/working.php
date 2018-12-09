@@ -216,6 +216,7 @@ break;
 			if (count($_SESSION['main']) > 3 || count($_SESSION['main2']) > 3) {
 			header("Location: index.php?page=jeu&err=manycard");
 		} else {
+
 			if($_SESSION['currPlayer'] == 0) {
 					if(calculScoreRED($link, $_SESSION['main']) >= calculScoreBLACK($link, $_SESSION['main'])) {
 						$score = calculScoreRED($link, $_SESSION['main']);
@@ -234,26 +235,27 @@ break;
 				}
 			}
 
-				addTurnScore($link, $score, $_SESSION['id_tour'], $_SESSION['id'], $_SESSION['id_manche']);
-
+			addTurnScore($link, $score, $_SESSION['id_tour'], $_SESSION['id'], $_SESSION['id_manche']);
 			$_SESSION['piocher'] = 0;
 
 			if($_SESSION['alreadycogne'] == true) {
 				if($_SESSION['currPlayer'] == 0) {
 					setMancheScoreJ1($link, $_SESSION['id_manche'], $_SESSION['bestscore1']);
+					header("Location: index.php?page=jeu");
 				} else {
 					setMancheScoreJ2($link, $_SESSION['id_manche'], $_SESSION['bestscore2']);
+					header("Location: index.php?page=jeu");
 				}
 
 				if($_SESSION['bestscore1'] > $_SESSION['bestscore2']) {
 					$_SESSION['gagnant'] = nomjoueur($_SESSION['player' . 0], $link);
 					setEnding($link, $_SESSION['id_manche'], $_SESSION['gagnant']);
 				} else {
-					//Si joue contre IA
 						if($_SESSION['isIA'] == true) {
 							$_SESSION['gagnant'] = nomIa($link, $_SESSION['player' . 1]);
 							setEnding($link, $_SESSION['id_manche'], 	$_SESSION['gagnant']);
 						} else {
+
 						$_SESSION['gagnant'] = nomjoueur($_SESSION['player' . 1], $link);
 						setEnding($link, $_SESSION['id_manche'], 	$_SESSION['gagnant']);
 					}
@@ -298,7 +300,7 @@ break;
 				$player = $_SESSION['player'. $next];
 				$_SESSION['currPlayer'] = $next;
 
-				header("Location: index.php?page=jeu");
+			header("Location: index.php?page=jeu");
 		}
 	}
 			break;
@@ -310,7 +312,9 @@ break;
 				header("Location: index.php?page=jeu&err=manycard");
 			}
 			if($_SESSION['alreadycogne'] == true) {
+
 				addAction($link, "fintour", 	$_SESSION['id_tour'], 	$_SESSION['id_manche'], 	$_SESSION['id'], 	$_SESSION['player' . $_SESSION['currPlayer']]);
+
 				if($_SESSION['currPlayer'] == 0) {
 					setMancheScoreJ1($link, $_SESSION['id_manche'], $_SESSION['bestscore1']);
 				} else {
@@ -321,8 +325,14 @@ break;
 					$_SESSION['gagnant'] = nomjoueur($_SESSION['player' . 0], $link);
 					setEnding($link, $_SESSION['id_manche'], $_SESSION['gagnant']);
 				} else {
+						if($_SESSION['isIA'] == true) {
+							$_SESSION['gagnant'] = nomIa($link, $_SESSION['player' . 1]);
+							setEnding($link, $_SESSION['id_manche'], 	$_SESSION['gagnant']);
+						} else {
+
 						$_SESSION['gagnant'] = nomjoueur($_SESSION['player' . 1], $link);
 						setEnding($link, $_SESSION['id_manche'], 	$_SESSION['gagnant']);
+					}
 				}
 
 				//fin de partie

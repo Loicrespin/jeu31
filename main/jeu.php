@@ -64,8 +64,7 @@ ob_start();
  <div id="jeuL1C2" class="event">
 	 <div class="entetepartie">Evénements :	</div>
 	 <?php
-	 var_dump($_SESSION['bestscore1']);
-	 var_dump($_SESSION['bestscore2']);
+	 var_dump(	$_SESSION['gagnant']);
 	  var_dump($_SESSION['iatour']);
 	 var_dump($_SESSION['Iaaction']);
 	 var_dump($_SESSION['main2']);
@@ -75,7 +74,11 @@ ob_start();
 			if($_SESSION['bestscore1'] > $_SESSION['bestscore2']) {
 				echo "Le joueur $_SESSION[gagnant] gagne la manche ! $_SESSION[bestscore1] contre $_SESSION[bestscore2] !</div>";
 			} else {
+				if($_SESSION['isIA'] == true) {
+						echo "Le'ia $_SESSION[gagnant] gagne la manche ! $_SESSION[bestscore2] contre $_SESSION[bestscore1] !</div>";
+				} else {
 				echo "Le joueur $_SESSION[gagnant] gagne la manche ! $_SESSION[bestscore2] contre $_SESSION[bestscore1] !</div>";
+			}
 			}
 
 			$_SESSION['main'] = array();

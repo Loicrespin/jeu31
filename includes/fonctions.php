@@ -58,48 +58,54 @@ function IaDefausse($link) {
       }
     }
   }
-
+  $_SESSION['defausselast'] = $id; 
   array_splice($_SESSION['main2'], array_search($id, $_SESSION['main2']),1);
   array_push($_SESSION['deckdefausse'],  $id);
   addAction($link, "Defausse", 	$_SESSION['id_tour'], 	$_SESSION['id_manche'], 	$_SESSION['id'], 	$_SESSION['player' . $_SESSION['currPlayer']]);
-
   }
 }
 
 function IaPlay($link, $idj) {
+
     $values = array('piocher', 'cogner', 'piochedefausse', 'fintour');
     $weights = array(getIaProbPioche($link, $idj), getIaProbCogne($link, $idj), getIaProbPioche($link, $idj), getIaProbfinTour($link, $idj));
     $weighted_value = weighted_random($values, $weights);
 
   switch ($weighted_value) {
     case 'piocher': {
+      if($_SESSION['piocher'] == 1) {
+        break;
+      } else {
       $_SESSION['piocher'] = 1;
 			$_SESSION['card'] = getCard($link, $_SESSION['id']);
 			$ans = $_SESSION['card'];
 
 			if ($ans == "endDeck") {
 			createNewDeckFromDeff($link, $_SESSION['id'], $_SESSION['deckdefausse']);
-			header("Location: index.php?page=jeu&card=$ans");
+			   header("Location: index.php?page=jeu&card=$ans");
 			}
 
       array_push($_SESSION['main2'], $_SESSION['card']);
       addAction($link, "Pioche", 	$_SESSION['id_tour'], 	$_SESSION['id_manche'], 	$_SESSION['id'], 	$_SESSION['player' . $_SESSION['currPlayer']]);
 
       IaDefausse($link);
+    }
       break;
     }
 
     case 'piochedefausse' : {
+      if($_SESSION['piocher'] == 1) {
+        break;
+      } else {
       $_SESSION['piocher'] = 1;
       //Ajout de la carte en main
       array_push($_SESSION['main2'], $_SESSION['defausselast']);
 
       array_splice($_SESSION['deckdefausse'], array_search($_SESSION['defausselast'], $_SESSION['deckdefausse']),1);
 
-      $ans = $_SESSION['defausselast'];
-
       addAction($link, "Pioche Defausse", 	$_SESSION['id_tour'], 	$_SESSION['id_manche'], 	$_SESSION['id'], 	$_SESSION['player' . $_SESSION['currPlayer']]);
       IaDefausse($link);
+    }
       break;
     }
 
