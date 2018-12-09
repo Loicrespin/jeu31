@@ -127,6 +127,17 @@ function nomjoueur($id, $link) {
 	}
 }
 
+//Fonction permettant de récupérer le nom de l'ia en jeu
+function nomIa($link, $id) {
+	$req = "SELECT strategie FROM ia WHERE Joueur_idJoueur = '" . $id . "';";
+	$ans = executeQuery($link, $req);
+	foreach ($ans as $line) {
+		foreach ($line as $val) {
+			return $val;
+		}
+	}
+}
+
 //Accueil
 
 //Fonction affichant le nombre de personnes inscrites sur la base de données
@@ -177,10 +188,43 @@ function getIaInGame($link) {
 	$playable = False;
 	$errMessage = "<p>Il semble qu'il n'y est aucune ia inscrit sur le jeu. Pour jouer il vous faut au moins une autre personne ou ia.</p>";
 	foreach ($ans as $line) {
-					$list .= "<input type='checkbox' name='player[]' value='$line[Joueur_idJoueur]'/><span class='entete'>$line[strategie]</span><br/>";
+					$list .= "<input type='checkbox' name='ia[]' value='$line[Joueur_idJoueur]'/><span class='entete'>$line[strategie]</span><br/>";
 					$playable = True;
 }
 	return ($playable ? $list : $errMessage);
+}
+
+//fonction permettant de récupérer les proba de pioche de ia
+function getIaProbPioche($link, $idj) {
+	$req = "SELECT chancePiocher FROM ia WHERE Joueur_idJoueur = $idj";
+	$ans = executeQuery($link, $req);
+	foreach ($ans as $line) {
+		foreach ($line as $val) {
+		return $val;
+		}
+	}
+}
+
+//fonction permettant de récupérer les proba de cogne de ia
+function getIaProbCogne($link, $idj) {
+	$req = "SELECT chanceCogner FROM ia WHERE Joueur_idJoueur = $idj";
+	$ans = executeQuery($link, $req);
+	foreach ($ans as $line) {
+		foreach ($line as $val) {
+		return $val;
+		}
+	}
+}
+
+//fonction permettant de récupérer les proba de defausse de ia
+function getIaProbfinTour($link, $idj) {
+	$req = "SELECT chanceFinTour FROM ia WHERE Joueur_idJoueur = $idj";
+	$ans = executeQuery($link, $req);
+	foreach ($ans as $line) {
+		foreach ($line as $val) {
+		return $val;
+		}
+	}
 }
 
 //Jeu
@@ -217,6 +261,12 @@ function createNewGame($link, $players, $manche)
 //fonction metant fin a la partie
 function endGame ($link, $idp, $vainqueur) {
 			$req = "UPDATE partie SET vainqueurPartie = '" .$vainqueur. "', finPartie = CURRENT_TIMESTAMP  WHERE idPartie = ". $idp .";";
+			executeUpdate($link, $req);
+
+			$req="TRUNCATE TABLE jeu_carte";
+			executeUpdate($link, $req);
+
+			$req="TRUNCATE TABLE joue";
 			executeUpdate($link, $req);
 }
 

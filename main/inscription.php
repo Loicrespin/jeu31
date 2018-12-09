@@ -1,6 +1,5 @@
 <!-- Page d'inscription -->
 <?php
-
 	//Gestion du formulaire d'inscription
 	if (isset($_POST['submitI'])) {
 		$full = True;

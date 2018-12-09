@@ -8,8 +8,7 @@
 		header("Location: index.php?err=link");
 	} else {
 		$_SESSION['link'] = $link;
-	}
-?>
+	}?>
 
 <!DOCTYPE html>
 <html>

@@ -1,8 +1,7 @@
 <!-- GAME -->
 <?php if (!isset($_GET['id']) && (!isset($_SESSION['player0']) || $_SESSION['player0'] === "")) {
 	header("Location: index.php");
-} ?>
-
+}?>
 <?php if (isset($_GET['id'])) {
 	$_SESSION['id'] = $_GET['id'];
 	$fullPlayers = getGame($link, $_GET['id']);
@@ -19,12 +18,12 @@
 	$_SESSION['nbPlayers'] = $i;
 	$_SESSION['currPlayer'] = 0;
 
-
 	if (isset($_SESSION['card'])) {
 	    unset($_SESSION['card']);
     }
-} ?>
-
+}
+ob_start();
+?>
 
 <!-- PANNEAU DES JOUEURS -->
 <div class="entetepartie panelleft">
@@ -37,25 +36,39 @@
 			echo nomjoueur($_SESSION['player0'], $link);
 			echo " : ";
 			echo getTotalSetWinInGame($link, nomjoueur($_SESSION['player0'], $link), $_SESSION['id']);
-			echo '</div>';
-			?>
+			echo "</div>";?>
 		</div>
 	</div>
 		<!-- PLAYER 2 -->
 		<div id="jeuL1C2" class="panelleftelement">
 			<div class="playername">
-				<?php echo '<div style="color: '.getColor($link, $_SESSION['player1']).'">';
-				 echo nomjoueur($_SESSION['player1'], $link);
-				 echo " : ";
-				 echo getTotalSetWinInGame($link, nomjoueur($_SESSION['player1'], $link), $_SESSION['id']);
-				 echo '</div>'; ?>
-			 </div>
+<?php
+			if($_SESSION['isIA'] == true) {
+					echo '<div style="color:'.getColor($link, $_SESSION['player1']).'">';
+					echo nomIa($link, $_SESSION['player1']);
+					echo " : ";
+					echo getTotalSetWinInGame($link, nomIa($link, $_SESSION['player1']), $_SESSION['id']);
+					echo "</div>";
+				} else {
+					 echo '<div style="color:'.getColor($link, $_SESSION['player1']).'">';
+					 echo nomjoueur($_SESSION['player1'], $link);
+					 echo " : ";
+					 echo getTotalSetWinInGame($link, nomjoueur($_SESSION['player1'], $link), $_SESSION['id']);
+					 echo "</div>";
+				 }
+?>
+		 </div>
 		</div>
  </div>
 
  <div id="jeuL1C2" class="event">
 	 <div class="entetepartie">Evénements :	</div>
 	 <?php
+	 var_dump($_SESSION['bestscore1']);
+	 var_dump($_SESSION['bestscore2']);
+	  var_dump($_SESSION['iatour']);
+	 var_dump($_SESSION['Iaaction']);
+	 var_dump($_SESSION['main2']);
 	 if (isset($_GET['end'])) {
 	 	if ($_GET['end'] == "endmanche") {
 			echo "<div class='eventspeech2'>La manche est finies ! <br/>";
@@ -68,8 +81,7 @@
 			$_SESSION['main'] = array();
 			$_SESSION['main2'] = array();
 
-			echo "<form action='index.php?page=working&action=nextset' method='POST' name='commandes'>";
-			echo "</br></br><button class='btn btn-success' type='submit' value='manche'>Manche suivante</button>";
+				header("Location: index.php?page=working&action=nextset");
 
 		} else if ($_GET['end'] == "endgame") {
 			echo "<div class='eventspeech2'>La partie est finies ! <br />";
@@ -119,7 +131,11 @@
 	 }
  }
    echo "<p class='eventspeech'>Manche : $_SESSION[currManche] / $_SESSION[manche]</p>";
-	 echo "<p class='eventspeech'>Tour de ". nomjoueur($_SESSION['player' . $_SESSION['currPlayer']], $link) ." !</p>";
+	 if($_SESSION['isIA'] == true && $_SESSION['currPlayer'] == 1) {
+		 	echo "<p class='eventspeech'>Tour de ". nomIa($link, $_SESSION['player' . $_SESSION['currPlayer']]) ." !</p>";
+	 } else {
+	 		echo "<p class='eventspeech'>Tour de ". nomjoueur($_SESSION['player' . $_SESSION['currPlayer']], $link) ." !</p>";
+ 	 }
 	 if (isset($_GET['card'])) {
 		 $card = getCardName($link, $_GET['card']);
 		 $_SESSION['card'] = $card;
@@ -132,34 +148,37 @@
 			 $card = getCardName($link, $_GET['defausse']);
 			  echo "<p class='eventspeech2'>Vous vous êtes défaussez de la carte : $card !</p>";
 		}
-	}
- ?>
+	}?>
 </div>
 
 <!-- PIOCHES -->
 <div id="jeuL2">
  <div id="jeuL2C1" class="panelright">
 	 <div class="entetepartielow">Pioches</div>
-	 <div class="piochesize"><img id="pile" alt="Pile de cartes" src="images/dosdecarte.jpg"></div>
-	 <div class='piochesizedef'>
-	 <?php if (isset($_GET['card'])) {
+	 <!-- <div class="piochesize"><img id="pile" alt="Pile de cartes" src="images/dosdecarte.jpg"></div> -->
+	 <div class='piochesizedef'><?php
+	 if (isset($_GET['card'])) {
 		 getImage($link, $_GET['card']);
-	 } ?>
+	 }?>
 	 </div>
 	 <p class="entetepartielowdef">Défausse</p>
-	 <div class='piochesize2'>
-	 <?php if (isset($_GET['defausse'])) {
-		getImage($link, $_GET['defausse']);
-	} ?>
-	</div>
+	 <div class='piochesize2'><?php
+		getImage($link, end($_SESSION['deckdefausse']));?>
+	</div><?php if (!isset($_GET['end'])) {
+			echo "<div class='defausseButton'> <form action='index.php?page=working&action=piochedefausse' method='POST' name='commandes'>";
+			echo "</br></br><button class='btn btn-danger' type='submit' value='piochedefausse'>Piocher carte défausse</button> </div>";
+		}?>
+	 </form>
  </div>
 </div>
 
 <!-- MAIN -->
 <div id="jeuL3">
 	<div id="jeuL3C3" class="panelcenter">
-		<span class="panelcentercard">
-			<?php
+		<span class="panelcentercard"><?php
+			if($_SESSION['isIA'] == true && $_SESSION['currPlayer'] == 1) {
+			  echo "<p class='scoremainpaneltitle'>L'ia est en trains de jouer ... </p>";
+			} else {
 			if($_SESSION['currPlayer'] == 0)
 			{
 				foreach ($_SESSION['main'] as $value) {
@@ -174,15 +193,14 @@
 				echo '</form>';
 			}
 		}
+	}
 		//Si une carte est clicker
 		if(!empty($_POST)) {
 		foreach ($_POST as $key => $value) {
 			$idcard = (int)$key;
 		}
-
 		$_SESSION['defausse'] = $idcard;
-	}
-			?>
+	}?>
 		</span>
 	</div>
 </div>
@@ -190,59 +208,66 @@
 <!-- ACTION BAR -->
 <div id="jeuL4">
 	<div id="jeuL4C4" class="panelbottom">
-		<div class="scoremainpanel">
-		<p class="scoremainpaneltitle">
-			Score Main :
-		</p>
-		<p class="scoremainpanelelement">
-			Rouge : <?php
-				if($_SESSION['currPlayer'] == 0) {
-					echo calculScoreRED($link, $_SESSION['main']);
-				 } else {
-						echo calculScoreRED($link, $_SESSION['main2']);
-				}
-				?>
-		</p>
-		<p class="scoremainpanelelement">
-			Noir :  <?php
-				if($_SESSION['currPlayer'] == 0) {
-						echo calculScoreBLACK($link,  $_SESSION['main']);
-				 } else {
-						echo calculScoreBLACK($link,  $_SESSION['main2']);
-				}
-				?>
-		</p>
-	</div>
+		<div class="scoremainpanel"><?php
+			if($_SESSION['isIA'] == true && $_SESSION['currPlayer'] == 1)
+			{
 
-		<span class="panelbottombutton">
-		<!-- Bouton de pioche -->
-		<?php if (!isset($_GET['end'])) {
+			} else {
+				echo"<p class='scoremainpaneltitle'>
+					Score Main :
+				</p>
+				<p class='scoremainpanelelement'>
+					Rouge : ";
+						if($_SESSION['currPlayer'] == 0) {
+							echo calculScoreRED($link, $_SESSION['main']);
+						 } else {
+								echo calculScoreRED($link, $_SESSION['main2']);
+						}
+			echo "</p>
+				<p class='scoremainpanelelement'>
+					Noir : ";
+						if($_SESSION['currPlayer'] == 0) {
+								echo calculScoreBLACK($link,  $_SESSION['main']);
+						 } else {
+								echo calculScoreBLACK($link,  $_SESSION['main2']);
+						}
+				echo "</p>";
+			}?>
+	</div>
+		<span class="panelbottombutton"><?php
+			if($_SESSION['isIA'] == true && $_SESSION['currPlayer'] == 1) {
+
+			} else {
+		 if (!isset($_GET['end'])) {
 				echo "<form action='index.php?page=working&action=card' method='POST' name='commandes'>";
 				echo "</br></br><button class='btn btn-primary' type='submit' value='Tirer une carte'>Tirer une carte</button>";
 			}
-		 ?>
-	 </form>
-		 <!-- Bouton de cogne -->
-		 <?php if (!isset($_GET['end'])) {
+	 echo "</form>";
+		 // <!-- Bouton de cogne -->
+		 if (!isset($_GET['end'])) {
 				 echo "<form action='index.php?page=working&action=cogner' method='POST' name='commandes'>";
 				 echo "</br></br><button class='btn btn-success' type='submit' value='Cogner'>Cogner</button>";
 			 }
-			?>
-		</form>
-		<!-- Bouton de défausse  -->
-		<?php if (!isset($_GET['end'])) {
+	 	echo "</form>";
+		// <!-- Bouton de défausse  -->
+		if (!isset($_GET['end'])) {
 				echo "<form action='index.php?page=working&action=defausse' method='POST' name='commandes'>";
 				echo "</br></br><button class='btn btn-danger' type='submit' value='Défausser'>Défausser</button>";
 			}
-		 ?>
-		 </form>
-		 <!-- Bouton de fin de tour  -->
-		 <?php if (!isset($_GET['end'])) {
+		 echo "</form>";
+		 // <!-- Bouton de fin de tour  -->
+		  if (!isset($_GET['end'])) {
 				 echo "<form action='index.php?page=working&action=endturn' method='POST' name='commandes'>";
-				 echo "</br></br><button class='btn btn-warning' type='submit' value='Défausser'>Fin du tour</button>";
+				 echo "</br></br><button class='btn btn-warning' type='submit' value='endTurn'>Fin du tour</button>";
 			 }
-			?>
-			</form>
+			echo "</form>";
+		}
+		if($_SESSION['isIA'] == true && $_SESSION['currPlayer'] == 1 && $_SESSION['alreadycogne'] == false) {
+			IaPlay($link, $_SESSION['player1']);
+			$_SESSION['Iaaction'] = IaPlay($link, $_SESSION['player1']);
+
+		}
+		 ob_end_flush();?>
 		</span>
 	</div>
 </div>
