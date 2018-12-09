@@ -192,6 +192,8 @@ break;
 			} else {
 				$_SESSION['piocher'] = 1;
 
+				$_SESSION['defausselast'] = end($_SESSION['deckdefausse']);
+
 				//Ajout de la carte en main
 				if($_SESSION['currPlayer'] == 0) {
 					 array_push($_SESSION['main'], $_SESSION['defausselast']);
