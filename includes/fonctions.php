@@ -1,7 +1,8 @@
 <?php
+
+
 function calculScoreRED($link, $hand) {
     $score = 0;
-
   	foreach ($hand as $value) {
       if(getColorCard($link, $value) == "red") {
         $score += getScore($link, $value);

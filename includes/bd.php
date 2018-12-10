@@ -216,9 +216,10 @@ $req = "INSERT INTO joueur (couleur) VALUES ('" . $color ."');";
 executeUpdate($link, $req);
 
 $req = "INSERT INTO ia (strategie, chanceCogner, chancePiocher, chanceFinTour, Joueur_idJoueur) VALUES ('". $nom . "', '". $chanceCogner . "', '" . $chancePiocher . "', '" . $chanceFinTour . "', '" . $nb . "');";
-return executeUpdate($link, $req);
+ $res = executeUpdate($link, $req);
 
-return $nb;
+ return $res;
+
 }
 
 

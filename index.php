@@ -1,7 +1,8 @@
 <?php
 	session_start();
-	require_once('includes/fonctions.php');
+
 	require_once("includes/bd.php");
+	require_once('includes/fonctions.php');
 
 	$link = getConnection($dbHost, $dbUser, $dbPwd, $dbName);
 	if (!$link) {

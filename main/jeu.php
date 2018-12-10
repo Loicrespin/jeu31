@@ -46,7 +46,7 @@ ob_start();
 		<!-- PLAYER 2 -->
 		<div id="jeuL1C2" class="panelleftelement">
 			<div class="playername">
-<?php
+			<?php
 			if($_SESSION['isIA'] == true) {
 					echo '<div style="color:'.getColor($link, $_SESSION['player1']).'">';
 					echo nomIa($link, $_SESSION['player1']);
@@ -60,7 +60,7 @@ ob_start();
 					 echo getTotalSetWinInGame($link, nomjoueur($_SESSION['player1'], $link), $_SESSION['id']);
 					 echo "</div>";
 				 }
-?>
+				 ?>
 		 </div>
 		</div>
  </div>
@@ -84,7 +84,7 @@ ob_start();
 			$_SESSION['main'] = array();
 			$_SESSION['main2'] = array();
 
-				//header("Location: index.php?page=working&action=nextset");
+				header("Location: index.php?page=working&action=nextset");
 						// <!-- Bouton de fin de tour  -->
 				echo "</form>";
 						echo "<form action='index.php?page=working&action=nextset' method='POST' name='commandes'>";

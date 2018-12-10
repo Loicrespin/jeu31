@@ -40,12 +40,7 @@
 			} else if(isset($_POST['ia'])){
 				$players = $_POST['ia'];
 				$_SESSION['isIA'] = true;
-			} else if(isset($_POST['chanceCogner']) && isset($_POST['chancePiocher']) && isset($_POST['chanceFinTour'])) {
-			createIa($link, $_POST['nomIa'], $_POST['chanceCogner'], $_POST['chancePiocher'], $_POST['chanceFinTour']);
-			header("Location: index.php?page=partie");
 			}
-
-
 
 	if (empty($players)) {
 		header("Location: index.php?page=partie&err=empty");
@@ -269,7 +264,7 @@ break;
 					setMancheScoreJ2($link, $_SESSION['id_manche'], $_SESSION['bestscore2']);
 				}
 
-				if($_SESSION['bestscore1'] > $_SESSION['bestscore2'] && $_SESSION['bestscore1'] < 32) {
+				if($_SESSION['bestscore1'] > $_SESSION['bestscore2']) {
 					$_SESSION['gagnant'] = nomjoueur($_SESSION['player' . 0], $link);
 					setEnding($link, $_SESSION['id_manche'], $_SESSION['gagnant']);
 				} else {
@@ -306,6 +301,7 @@ break;
 				}
 
 		} else {
+
 			$_SESSION['eventAction'] ="";
 			addAction($link, "fintour", 	$_SESSION['id_tour'], 	$_SESSION['id_manche'], 	$_SESSION['id'], 	$_SESSION['player' . $_SESSION['currPlayer']]);
 
