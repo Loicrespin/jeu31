@@ -30,7 +30,7 @@ Le joueur √† gauche du donneur commence le jeu : soit il prend la carte retourn√
 	<td><img src="images/jeu de cartes.jpg" alt="cartesclassiques"></td>
 </tr>
 <tr>
-	<td><div class=cartesfantastiques ><p>Cartes "Fantastiques"</p></td>
+	<td><div class=cartesfantastique ><p>Cartes "Fantastiques"</p></td>
 	<td><img src="images/cartesF.jpg" alt="cartesfantastiques"></td>
 </tr>
 

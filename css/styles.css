@@ -617,7 +617,7 @@ flex-direction: row;
 
 .scoremainpanel {
 	position: absolute;
-	margin-top: -2%;
+	margin-top: -16%;
 
 }
 
@@ -625,6 +625,7 @@ flex-direction: row;
 	display: flex;
 	justify-content: center;
 	flex-direction: row;
+	margin-top: -13%;
 }
 
 .panelbottombutton form {
@@ -670,7 +671,7 @@ flex-direction: row;
 	left: 0;
 	right: 0;
 	top: 0%;
-	
+
 	margin: 0 auto;
 	padding: 0px;
 	overflow: auto;

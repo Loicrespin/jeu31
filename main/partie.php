@@ -1,6 +1,5 @@
 <?php
 if (isset($_SESSION['pseudo'])) {
-
 	if (isset($_GET['err'])) {
 		switch ($_GET['err']) {
 			case "empty": {
@@ -9,6 +8,11 @@ if (isset($_SESSION['pseudo'])) {
 			}
 			case "toomany": {
 				echo "<div class='messageError col-md-offset-1'>Vous devez sélectionner 1 adversaires maximum !</div><br />";
+				break;
+			}
+
+			case "emptyset" : {
+				echo "<div class='messageError col-md-offset-1'>Vous devez parmètrer le nombre de manche !</div><br />";
 				break;
 			}
 			default:
@@ -29,6 +33,23 @@ if (isset($_SESSION['pseudo'])) {
 	echo "<fieldset><legend class='enteteconfigpartie'>Veuillez sélectionner votre adversaires ia :</legend>";
 	echo getIaInGame($link);
 
+	echo "<fieldset class='visibility'><legend class='enteteconfigpartie'>Paramétrage de l'ia (optionnel) :</legend>";
+
+	echo "<label for='id1' class='entete'>Nom ia :</label>";
+	echo "<input id='id1' class='form-control' type='text' name='nomIa'></input><br/>";
+
+	echo "<label for='id1' class='entete'>Chance de cogner :</label>";
+	echo "<input id='id1' class='form-control' type='text' name='chanceCogner'></input><br/>";
+
+	echo "<label for='id2' class='entete'>Chance de Piocher :</label>";
+	echo "<input id='id2' class='form-control' type='text' name='chancePiocher'></input><br/>";
+
+	echo "<label for='id3' class='entete'>Chance de fin de tour :</label>";
+	echo "<input id='id3' class='form-control' type='text' name='chanceFinTour'></input><br/>";
+
+	echo "<button class='btn btn-warning col-md-offset-4' type='submit' id='launch' name='submit' value='setIA'>paramétrer ia</button>";
+	echo "</fieldset>";
+
 	echo "<fieldset><legend class='enteteconfigpartie'>Veuillez sélectionner le nombre de manche :</legend>";
 			echo "<div class='form-group'><select class='form-control' name='manche'>";
 			echo "<option selected disabled>Nombre de Manches</option>";
@@ -38,7 +59,7 @@ if (isset($_SESSION['pseudo'])) {
 			echo "</select></div>";
 
 		echo "<fieldset><legend class='enteteconfigpartie'>Veuillez sélectionner le jeu de carte souhaité :</legend>";
-			echo "<div class='form-group'><select class='form-control' name='theme'>";
+			echo "<div class='form-group'><select class='form-control' name='theme' >";
 			echo "<option selected disabled>Jeux de cartes</option>";
 			echo "<option value='C'>classique</option>";
 			echo "<option value='F'>fantastique</option>";

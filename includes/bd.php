@@ -186,13 +186,41 @@ function getIaInGame($link) {
 
 	$list = "";
 	$playable = False;
-	$errMessage = "<p>Il semble qu'il n'y est aucune ia inscrit sur le jeu. Pour jouer il vous faut au moins une autre personne ou ia.</p>";
+	$errMessage = "<p>Il semble qu'il n'y est aucune ia inscrite sur le jeu. Pour jouer il vous faut au moins une autre personne ou ia.</p>";
 	foreach ($ans as $line) {
 					$list .= "<input type='checkbox' name='ia[]' value='$line[Joueur_idJoueur]'/><span class='entete'>$line[strategie]</span><br/>";
 					$playable = True;
 }
 	return ($playable ? $list : $errMessage);
 }
+
+//Fonction permettant de créer une ia paramètrée par le joueur
+function createIa($link, $nom, $chanceCogner, $chancePiocher, $chanceFinTour) {
+	$req = "SELECT max(idJoueur) FROM joueur;";
+	$ans = executeQuery($link, $req);
+	foreach ($ans as $line) {
+		foreach ($line as $val) {
+			$nb = $val;
+		}
+	}
+	if ($nb == NULL) {
+		$nb = 1;
+		$req = "ALTER TABLE joueur AUTO_INCREMENT = 1;";
+		executeUpdate($link, $req);
+	} else {
+$nb++;
+}
+$color = randomColor();
+
+$req = "INSERT INTO joueur (couleur) VALUES ('" . $color ."');";
+executeUpdate($link, $req);
+
+$req = "INSERT INTO ia (strategie, chanceCogner, chancePiocher, chanceFinTour, Joueur_idJoueur) VALUES ('". $nom . "', '". $chanceCogner . "', '" . $chancePiocher . "', '" . $chanceFinTour . "', '" . $nb . "');";
+return executeUpdate($link, $req);
+
+return $nb;
+}
+
 
 //fonction permettant de récupérer les proba de pioche de ia
 function getIaProbPioche($link, $idj) {

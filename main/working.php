@@ -37,15 +37,20 @@
 			if(isset($_POST['player'])) {
 					$players = $_POST['player'];
 					$_SESSION['isIA'] = false;
-			} else {
+			} else if(isset($_POST['ia'])){
 				$players = $_POST['ia'];
 				$_SESSION['isIA'] = true;
+			} else if(isset($_POST['chanceCogner']) && isset($_POST['chancePiocher']) && isset($_POST['chanceFinTour'])) {
+			createIa($link, $_POST['nomIa'], $_POST['chanceCogner'], $_POST['chancePiocher'], $_POST['chanceFinTour']);
+			header("Location: index.php?page=partie");
 			}
+
+
 
 	if (empty($players)) {
 		header("Location: index.php?page=partie&err=empty");
 	} else {
-		if (count($players) > 1) {
+		if (count($players) < 1) {
 			header("Location: index.php?page=partie&err=toomany");
 		} else {
 			for ($i = 0; $i < 4; $i++) {
@@ -72,7 +77,7 @@
 						$manche = $_POST['manche'];
 						$_SESSION['manche'] = $manche;
 					} else {
-						$_SESSION['manche'] = 1;
+						header("Location: index.php?page=partie&err=emptyset");
 					}
 
 					if(isset($_POST['theme'])) {
@@ -100,6 +105,7 @@
 			$_SESSION['main'] = $cartArray;
 			$_SESSION['main2'] = $cartArray2;
 
+			$_SESSION['eventAction'] ="";
 		  $_SESSION['Iaaction'] = "none";
 			$_SESSION['defausse'] = 0;
 			$_SESSION['deckdefausse'] = array();
@@ -225,9 +231,15 @@ break;
 				if($_SESSION['currPlayer'] == 0) {
 					setMancheScoreJ1($link, $_SESSION['id_manche'], $_SESSION['bestscore1']);
 					addAction($link, "cogner", 	$_SESSION['id_tour'], 	$_SESSION['id_manche'], 	$_SESSION['id'], 	$_SESSION['player' . $_SESSION['currPlayer']]);
+					$_SESSION['eventAction'] = "Attention le joueur 1 à cogné il vous reste un dernier tour !";
 				} else {
 					setMancheScoreJ2($link,$_SESSION['id_manche'], $_SESSION['bestscore2']);
 					addAction($link, "cogner", 	$_SESSION['id_tour'], 	$_SESSION['id_manche'], 	$_SESSION['id'], 	$_SESSION['player' . $_SESSION['currPlayer']]);
+					if($_SESSION['isIA'] == true) {
+						$_SESSION['eventAction'] = "Attention l'ia à cognée il vous reste un dernier tour !";
+					} else {
+						$_SESSION['eventAction'] = "Attention le joueur 2 à cogné il vous reste un dernier tour !";
+					}
 				}
 
 				$start = $_SESSION['currPlayer'];
@@ -257,7 +269,7 @@ break;
 					setMancheScoreJ2($link, $_SESSION['id_manche'], $_SESSION['bestscore2']);
 				}
 
-				if($_SESSION['bestscore1'] > $_SESSION['bestscore2']) {
+				if($_SESSION['bestscore1'] > $_SESSION['bestscore2'] && $_SESSION['bestscore1'] < 32) {
 					$_SESSION['gagnant'] = nomjoueur($_SESSION['player' . 0], $link);
 					setEnding($link, $_SESSION['id_manche'], $_SESSION['gagnant']);
 				} else {
@@ -294,6 +306,7 @@ break;
 				}
 
 		} else {
+			$_SESSION['eventAction'] ="";
 			addAction($link, "fintour", 	$_SESSION['id_tour'], 	$_SESSION['id_manche'], 	$_SESSION['id'], 	$_SESSION['player' . $_SESSION['currPlayer']]);
 
 			if($_SESSION['currPlayer'] == 0) {
@@ -325,8 +338,6 @@ break;
 				addTurnScore($link, $score, $_SESSION['id_tour'], $_SESSION['id'], $_SESSION['id_manche']);
 				$_SESSION['id_tour'] = addNewTurn($link, $_SESSION['id'], $_SESSION['id_manche']);
 
-
-
 			header("Location: index.php?page=jeu");
 		}
 			break;
@@ -334,6 +345,7 @@ break;
 
 		case "nextset" : {
 				$_SESSION['currManche']++;
+				$_SESSION['eventAction'] ="";
 				$_SESSION['bestscore1'] = 0;
 				$_SESSION['bestscore2'] = 0;
 				$_SESSION['id_manche'] = createNewSet($link, $_SESSION['id']);

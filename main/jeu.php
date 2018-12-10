@@ -84,10 +84,15 @@ ob_start();
 			$_SESSION['main'] = array();
 			$_SESSION['main2'] = array();
 
-				header("Location: index.php?page=working&action=nextset");
+				//header("Location: index.php?page=working&action=nextset");
+						// <!-- Bouton de fin de tour  -->
+				echo "</form>";
+						echo "<form action='index.php?page=working&action=nextset' method='POST' name='commandes'>";
+						echo "</br></br><button class='btn btn-success' type='submit' value='nextset'>Manche suivante</button>";
+				 echo "</form>";
 
 		} else if ($_GET['end'] == "endgame") {
-			echo "<div class='eventspeech2'>La partie est finies ! <br />";
+			echo "<div class='eventspeech2'>La partie est finie ! <br />";
 			echo "Le joueur " . gameWinner($link, $_SESSION['id']) . " gagne la partie !<br> Pour un total de " . getTotalSetWinInGame($link, gameWinner($link, $_SESSION['id']), $_SESSION['id']) . " manches gagnée sur $_SESSION[manche] !</div>";
 
 
@@ -120,15 +125,6 @@ ob_start();
 				echo "<p class='eventspeech2'>Vous devez piochez et vous défaussez avant de conclure votre tour ! </p>";
 				break;
 			}
-			case "J1cogner" : {
-				echo "<p class='eventspeech2'>Attention le joueur 1 à cogné c'est votre dernier tour ! </p>";
-				break;
-			}
-			case "J2cogner" : {
-				echo "<p class='eventspeech2'>Attention le joueur 2 à cogné c'est votre dernier tour ! </p>";
-				break;
-			}
-
 		 default:
 			 break;
 	 }
@@ -139,6 +135,9 @@ ob_start();
 	 } else {
 	 		echo "<p class='eventspeech'>Tour de ". nomjoueur($_SESSION['player' . $_SESSION['currPlayer']], $link) ." !</p>";
  	 }
+	 if($_SESSION['eventAction'] != "") {
+		 echo "<p class='eventspeech2' style='color:red'>$_SESSION[eventAction]</p>";
+	 }
 	 if (isset($_GET['card'])) {
 		 $card = getCardName($link, $_GET['card']);
 		 $_SESSION['card'] = $card;
@@ -157,7 +156,7 @@ ob_start();
 <!-- PIOCHES -->
 <div id="jeuL2">
  <div id="jeuL2C1" class="panelright">
-	 <div class="entetepartielow">Pioches</div>
+	 <div class="entetepartielow">Pioche</div>
 	<div class="piochesize"><img id="pile" alt="Pile de cartes" src="images/dosdecarte.jpg"></div>
 	 <div class='piochesizedef'><?php
 	 if (isset($_GET['card'])) {
